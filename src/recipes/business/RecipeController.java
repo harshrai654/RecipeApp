@@ -6,14 +6,15 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Map;
 
 
 @RestController
 public class RecipeController {
 
-    final
-RecipeService recipeService;
+    final RecipeService recipeService;
 
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
@@ -44,4 +45,33 @@ RecipeService recipeService;
 
         return ResponseEntity.status(404).build();
     }
+
+    @PutMapping("/api/recipe/{id}")
+    ResponseEntity updateRecipe(@RequestBody @Valid Recipe recipe, @PathVariable Long id) {
+        if(recipeService.existsById(id)) {
+            recipe.setId(id);
+            recipeService.save(recipe);
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(404).build();
+    }
+
+    @GetMapping("/api/recipe/search")
+    List<Recipe> searchRecipes(@RequestParam(required = false) String category, @RequestParam(required = false) String name) {
+        if(category == null && name == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        if(category != null && name != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        if(category != null) {
+            return recipeService.findRecipesByCategory(category);
+        }
+
+        return recipeService.findRecipesContainingName(name);
+    }
+
 }

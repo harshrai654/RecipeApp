@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import recipes.persistence.RecipeCrudRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class RecipeService {
@@ -18,6 +19,10 @@ public class RecipeService {
     public Recipe findRecipeById(Long id) {
         return recipeCrudRepository.findRecipeById(id);
     }
+
+    public List<Recipe> findRecipesContainingName(String name){return recipeCrudRepository.findRecipesByNameContainingIgnoreCaseOrderByDateDesc(name);}
+
+    public List<Recipe> findRecipesByCategory(String category){return recipeCrudRepository.findRecipesByCategoryIgnoreCaseOrderByDateDesc(category);}
 
     public Recipe save(Recipe newRecipe) {
         return recipeCrudRepository.save(newRecipe);
