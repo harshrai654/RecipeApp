@@ -53,6 +53,12 @@ public class Recipe {
     @Column(name = "category")
     private String category;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User userId;
+
+
     @UpdateTimestamp
     @Column(name = "date")
     private LocalDateTime date;
